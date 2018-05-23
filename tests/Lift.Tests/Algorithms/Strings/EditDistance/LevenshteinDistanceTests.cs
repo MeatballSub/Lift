@@ -8,13 +8,12 @@ namespace lift.algorithms.Strings.EditDistance
     {
         [Theory]
         [InlineData(null, null, 0)]
-        [InlineData(null, "right", 5)]
-        [InlineData("left", null, 4)]
-        [InlineData("string", "string", 0)]
-        [InlineData("", "", 0)]
-        [InlineData("str", "string", 3)]
-        [InlineData("string", "str", 3)]
-        [InlineData("string", "strong", 1)]
+        [InlineData(null, "string", 6)]
+        [InlineData("string", null, 6)]
+        [InlineData("insertion", "insertioning", 3)]
+        [InlineData("substitution", "subspipupion", 3)]
+        [InlineData("deletion", "let", 5)]
+        [InlineData("allthree", "ballpree", 3)]
         public void EditDistance_ShouldGenerateCorrectEditDistance(
             string string1,
             string string2,
@@ -32,13 +31,13 @@ namespace lift.algorithms.Strings.EditDistance
         [InlineData("string", new[] { "str", "stri" }, new[] { "stri" })]
         [InlineData("string", new[] { "stra", "strb" }, new[] { "stra", "strb" })]
         public void Similar_ShouldReturnSimilarStrings(
-            string @string,
+            string str,
             string[] strings,
             string[] expected)
         {
             IEditDistance distance = new LevenshteinDistance();
 
-            var actual = distance.FindSimilar(@string, strings);
+            var actual = str.SimilarTo(strings, distance);
 
             Assert.Equal(
                 expected.OrderBy(_ => _),

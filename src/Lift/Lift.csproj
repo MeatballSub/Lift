@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Jeremy Capello</Authors>
+    <Company>Lethargic Developer</Company>
+    <Description>Possibly useful stuff.</Description>
+    <Copyright>2018</Copyright>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/LiftNet/Lift</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/LiftNet/Lift</RepositoryUrl>
+    <PackageId>LiftNet</PackageId>
   </PropertyGroup>
 
 </Project>
