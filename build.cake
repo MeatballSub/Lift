@@ -1,4 +1,4 @@
-#tool nuget:?package=GitVersion.CommandLine&version=3.6.5
+#tool nuget:?package=GitVersion.CommandLine&version=4.0.0-beta0012
 #tool nuget:?package=GitLink&version=3.1.0
 #tool nuget:?package=GitReleaseNotes&version=0.7.0
 
@@ -6,7 +6,7 @@
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////
 var target = Argument("target", "Default");
-var config = Argument("config", "Release");
+var config = Argument("config", "Debug");
 
 //////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -16,12 +16,17 @@ var projects = ParseSolution(solution)
   .Projects
   .Where(_ => System.IO.Path.GetExtension(_.Path.ToString()) == ".csproj");
 var artifactsDir = Directory("./artifacts/");
-var buildNumber = EnvironmentVariable("BUILD_NUMBER");
 string version = null;
 
 //////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////
+Information("");
+Information("========================================");
+Information("Settings");
+Information("========================================");
+Information($"Configuration: {config}");
+
 Task("Clean")
   .Does(() =>
   {
@@ -37,14 +42,25 @@ Task("Clean")
 Task("Version")
   .Does(() =>
   {
-    version = GitVersion(new GitVersionSettings
+    GitVersion(new GitVersionSettings
     {
-      UpdateAssemblyInfo = false
-    }).NuGetVersionV2?.Replace("unstable", "preview");
+      UpdateAssemblyInfo = true,
+      LogFilePath = "console",
+      OutputType = GitVersionOutput.BuildServer
+    });
 
-    if (!string.IsNullOrEmpty(buildNumber))
+    var gitVersion = GitVersion(new GitVersionSettings
     {
-      version = $"{version}-{buildNumber}";
+      OutputType = GitVersionOutput.Json
+    });
+
+    version = gitVersion.MajorMinorPatch;
+    
+    var tag = gitVersion.PreReleaseLabel;
+    var commitNumber = gitVersion.CommitsSinceVersionSourcePadded;
+    if (!string.IsNullOrEmpty(tag))
+    {
+      version = $"{version}-{tag}-{commitNumber}";
     }
 
     Information("Version: " + version);
