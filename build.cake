@@ -6,16 +6,18 @@
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////
 var target = Argument("target", "Default");
-var config = Argument("config", "Debug");
+var config = Argument("configuration", "Debug");
 
 //////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
 //////////////////////////////////////////////////////////////////
-var solution = GetFiles("./*.sln").FirstOrDefault();
+var assemblyVersion = "1.0.0";
+var packageVersion = "1.0.0";
+
+var solution = GetFiles("./*.sln").Select(_ => _.FullPath).FirstOrDefault();
 var projects = GetFiles("./src/**/*.csproj").Select(_ => _.FullPath);
 var tests = GetFiles("./tests/**/*.csproj").Select(_ => _.FullPath);
 var artifactsDir = Directory("./artifacts/");
-string version = null;
 
 //////////////////////////////////////////////////////////////////
 // TASKS
@@ -29,85 +31,83 @@ Information($"Configuration: {config}");
 Task("Clean")
   .Does(() =>
   {
-    foreach (var project in projects)
+    var settings = new DotNetCoreCleanSettings
     {
-      Information(project);
-      DotNetCoreClean(project);
-    }
+      Configuration = config
+    };
+
+    DotNetCoreClean(solution, settings);
 
     CleanDirectory(artifactsDir);
-  });
-
-Task("Version")
-  .Does(() =>
-  {
-    GitVersion(new GitVersionSettings
-    {
-      UpdateAssemblyInfo = true,
-      LogFilePath = "console",
-      OutputType = GitVersionOutput.BuildServer
-    });
-
-    var gitVersion = GitVersion(new GitVersionSettings
-    {
-      OutputType = GitVersionOutput.Json
-    });
-
-    version = gitVersion.MajorMinorPatch;
-    
-    if (config?.ToLower() != "release")
-    {
-      var tag = gitVersion.PreReleaseLabel;
-      var commitNumber = gitVersion.CommitsSinceVersionSourcePadded;
-      
-      if (!string.IsNullOrEmpty(tag))
-      {
-        version = $"{version}-{tag}-{commitNumber}";
-      }
-    }
-
-    Information("Version: " + version);
   });
 
 Task("Restore")
   .Does(() =>
   {
-    foreach (var project in projects)
-    {
-      DotNetCoreRestore(project);
-    }
+    DotNetCoreRestore();
+  });
+
+Task("Version")
+  .Does(() =>
+  {
+    GitVersion gitVersion = GitVersion();
+    assemblyVersion = gitVersion.AssemblySemVer;
+    packageVersion = gitVersion.NuGetVersionV2;
+
+    Information($"AssemblySemVer: {assemblyVersion}");
+    Information($"NuGetVersionV2: {packageVersion}");
+  });
+
+Task("SetAppVeyorVersion")
+  .IsDependentOn("Version")
+  .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
+  .Does(() => 
+  {
+    AppVeyor.UpdateBuildVersion(packageVersion);
   });
 
 Task("Build")
   .IsDependentOn("Clean")
-  .IsDependentOn("Version")
   .IsDependentOn("Restore")
+  .IsDependentOn("Version")
+  .IsDependentOn("SetAppVeyorVersion")
   .Does(() =>
   {
     var settings = new DotNetCoreBuildSettings
     {
       Configuration = config,
-      ArgumentCustomization = args => args.Append($"/p:Version={version}")
+      NoIncremental = true,
+      NoRestore = true,
+      MSBuildSettings = new DotNetCoreMSBuildSettings()
+        .SetVersion(assemblyVersion)
+        .WithProperty("FileVersion", packageVersion)
+        .WithProperty("InformationalVersion", packageVersion)
+        .WithProperty("nowarn", "7035")
+      //ArgumentCustomization = args => args.Append($"/p:Version={version}")
     };
 
-    foreach (var project in projects)
-    {
-      DotNetCoreBuild(project, settings);
-    }
+    DotNetCoreBuild(solution, settings);
   });
 
 Task("Test")
   .IsDependentOn("Build")
   .Does(() =>
   {
+    var settings = new DotNetCoreTestSettings
+    {
+      Configuration = config
+    };
+
     foreach (var test in tests)
     {
-      DotNetCoreTest(test);
+      DotNetCoreTest(test, settings);
     }
-  });
+  })
+  .DeferOnError();
 
 Task("Package")
   .IsDependentOn("Test")
+  .WithCriteria(() => HasArgument("pack"))
   .Does(() =>
   {
     var settings = new DotNetCorePackSettings
@@ -115,16 +115,35 @@ Task("Package")
       Configuration = config,
       OutputDirectory = artifactsDir,
       NoBuild = true,
-      ArgumentCustomization = args => args.Append($"/p:Version={version}")
+      NoRestore = true,
+      IncludeSymbols = true,
+      MSBuildSettings = new DotNetCoreMSBuildSettings()
+        .WithProperty("PackageVersion", packageVersion)
+        .WithProperty("Copyright", $"Copyright Lethargic Developer {DateTime.Now.Year}")
+      //ArgumentCustomization = args => args.Append($"/p:Version={version}")
     };
 
     foreach (var project in projects.Where(_ => _.EndsWith(".Package.csproj")))
     {
       DotNetCorePack(project, settings);
     }
+
+    FixProps();
   });
 
 Task("Default")
   .IsDependentOn("Package");
 
 RunTarget(target);
+
+private void FixProps()
+{
+  var restoreSettings = new DotNetCoreRestoreSettings
+  {
+    MSBuildSettings = new DotNetCoreMSBuildSettings()
+      .WithProperty("Version", packageVersion)
+      .WithProperty("Configuration", config)
+  };
+
+  DotNetCoreRestore(restoreSettings);
+}

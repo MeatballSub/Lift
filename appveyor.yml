@@ -2,9 +2,8 @@
 init:
   - cmd: git config --global core.autocrlf true
 test: off
-build_script:
-  - ps: .\build.cmd
-configuration: Debug
+assembly_info:
+  patch: false
 artifacts:
   - path: '.\artifacts\*.nupkg'
     name: NuGet
@@ -15,7 +14,8 @@ for:
   branches:
     only:
       - master
-  configuration: Release
+  build_script:
+  - ps: .\build.ps1 -configuration Release -pack
   deploy:
     - provider: NuGet
       name: production
@@ -30,7 +30,8 @@ for:
   branches:
     only:
       - develop
-  configuration: Debug
+  build_script:
+  - ps: .\build.cmd -configuration Debug
   deploy:
     - provider: NuGet
       server: https://www.myget.org/F/lethargicdeveloper/api/v2/package
