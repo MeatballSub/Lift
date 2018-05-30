@@ -31,7 +31,7 @@ for:
     only:
       - develop
   build_script:
-  - ps: .\build.cmd -configuration Debug
+  - ps: .\build.cmd -configuration Debug -pack
   deploy:
     - provider: NuGet
       server: https://www.myget.org/F/lethargicdeveloper/api/v2/package
