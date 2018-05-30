@@ -1,3 +1,3 @@
 @echo off
 setlocal
-powershell -NoProfile %~dp0scripts\build.ps1 %*
+powershell -NoProfile %~dp0\cake.ps1 %*

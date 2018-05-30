@@ -12,9 +12,8 @@ var config = Argument("config", "Debug");
 // GLOBAL VARIABLES
 //////////////////////////////////////////////////////////////////
 var solution = GetFiles("./*.sln").FirstOrDefault();
-var projects = ParseSolution(solution)
-  .Projects
-  .Where(_ => System.IO.Path.GetExtension(_.Path.ToString()) == ".csproj");
+var projects = GetFiles("./src/**/*.csproj").Select(_ => _.FullPath);
+var tests = GetFiles("./tests/**/*.csproj").Select(_ => _.FullPath);
 var artifactsDir = Directory("./artifacts/");
 string version = null;
 
@@ -30,10 +29,10 @@ Information($"Configuration: {config}");
 Task("Clean")
   .Does(() =>
   {
-    foreach (var path in projects.Select(_ => _.Path.ToString()))
+    foreach (var project in projects)
     {
-      Information(path);
-      DotNetCoreClean(path);
+      Information(project);
+      DotNetCoreClean(project);
     }
 
     CleanDirectory(artifactsDir);
@@ -56,11 +55,15 @@ Task("Version")
 
     version = gitVersion.MajorMinorPatch;
     
-    var tag = gitVersion.PreReleaseLabel;
-    var commitNumber = gitVersion.CommitsSinceVersionSourcePadded;
-    if (!string.IsNullOrEmpty(tag))
+    if (config?.ToLower() != "release")
     {
-      version = $"{version}-{tag}-{commitNumber}";
+      var tag = gitVersion.PreReleaseLabel;
+      var commitNumber = gitVersion.CommitsSinceVersionSourcePadded;
+      
+      if (!string.IsNullOrEmpty(tag))
+      {
+        version = $"{version}-{tag}-{commitNumber}";
+      }
     }
 
     Information("Version: " + version);
@@ -69,9 +72,9 @@ Task("Version")
 Task("Restore")
   .Does(() =>
   {
-    foreach (var path in projects.Select(_ => _.Path.ToString()))
+    foreach (var project in projects)
     {
-      DotNetCoreRestore(path);
+      DotNetCoreRestore(project);
     }
   });
 
@@ -87,9 +90,9 @@ Task("Build")
       ArgumentCustomization = args => args.Append($"/p:Version={version}")
     };
 
-    foreach (var path in projects.Select(_ => _.Path.ToString()))
+    foreach (var project in projects)
     {
-      DotNetCoreBuild(path, settings);
+      DotNetCoreBuild(project, settings);
     }
   });
 
@@ -97,11 +100,9 @@ Task("Test")
   .IsDependentOn("Build")
   .Does(() =>
   {
-    foreach (var path in projects
-      .Where(_ => _.Name.EndsWith("Tests"))
-      .Select(_ => _.Path.ToString()))
+    foreach (var test in tests)
     {
-      DotNetCoreTest(path);
+      DotNetCoreTest(test);
     }
   });
 
@@ -117,11 +118,9 @@ Task("Package")
       ArgumentCustomization = args => args.Append($"/p:Version={version}")
     };
 
-    foreach (var path in projects
-      .Where(_ => !_.Name.EndsWith("Tests"))
-      .Select(_ => _.Path.ToString()))
+    foreach (var project in projects.Where(_ => _.EndsWith(".Package.csproj")))
     {
-      DotNetCorePack(path, settings);
+      DotNetCorePack(project, settings);
     }
   });
 

@@ -6,19 +6,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F43E4154-5D1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8AD4740F-2430-42E1-82BC-C30A0B5FBBAC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lift", "src\Lift\Lift.csproj", "{70877899-37A7-46B0-B845-ACDCAB4ED62B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lift.Package", "src\Lift.Package\Lift.Package.csproj", "{70877899-37A7-46B0-B845-ACDCAB4ED62B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lift.Tests", "tests\Lift.Tests\Lift.Tests.csproj", "{E609CA22-9A0A-413A-A95D-77E4E9E264A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lift.Package.Tests", "tests\Lift.Package.Tests\Lift.Package.Tests.csproj", "{E609CA22-9A0A-413A-A95D-77E4E9E264A3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{771E2E35-65BA-45D6-A369-D80A10151B5C}"
 	ProjectSection(SolutionItems) = preProject
 		build\appveyor.yml = build\appveyor.yml
 		build\build.cake = build\build.cake
 		build.cmd = build.cmd
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "win", "win", "{91AF3F68-1A84-4EE6-A066-D6E78D012CA5}"
-	ProjectSection(SolutionItems) = preProject
 		build\win\build.ps1 = build\win\build.ps1
 		build\win\cake.ps1 = build\win\cake.ps1
 	EndProjectSection
@@ -64,7 +60,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{70877899-37A7-46B0-B845-ACDCAB4ED62B} = {F43E4154-5D1E-456F-8446-223CA874FB8E}
 		{E609CA22-9A0A-413A-A95D-77E4E9E264A3} = {8AD4740F-2430-42E1-82BC-C30A0B5FBBAC}
-		{91AF3F68-1A84-4EE6-A066-D6E78D012CA5} = {771E2E35-65BA-45D6-A369-D80A10151B5C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {08CE3CD5-F953-4265-BFB9-F5BA6EFF686A}

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lift\Lift.csproj" />
+    <ProjectReference Include="..\..\src\Lift.Package\Lift.Package.csproj" />
   </ItemGroup>
 
 </Project>

@@ -20,7 +20,7 @@ for:
     - provider: NuGet
       name: production
       api_key:
-        secure: rYW/9ptc6daqi3EnbDyNGHJ0iJfBqT/hp2m/0P5rySNX7xDA9xrDi5dQanSAAMVe
+        secure: 0xScMBscH8iJ/a80e1dFkMc/ehAYd1FoeiZ/QmTe14TOlR/xt0H3lfxhphxnJfko
       on:
         branch: master
         appveyor_repo_tag: true
