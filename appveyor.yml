@@ -15,7 +15,7 @@ for:
     only:
       - master
   build_script:
-  - ps: .\build.ps1 -configuration Release -pack
+  - ps: .\build.cmd -configuration Release -pack
   deploy:
     - provider: NuGet
       name: production
