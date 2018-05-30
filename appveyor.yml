@@ -35,6 +35,8 @@ for:
   deploy:
     - provider: NuGet
       server: https://www.myget.org/F/lethargicdeveloper/api/v2/package
+      skip_symbols: false
+      symbol_server: https://www.myget.org/F/lethargicdeveloper/symbols/api/v2/package
       api_key:
         secure: Jjf/28XFNSoemMibRmtyttdDFf1s9TGpAGra0CWyLFgFW69rEe5qBeEahdq9Cl8v
       on:
