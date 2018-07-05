@@ -2,6 +2,8 @@
 init:
   - cmd: git config --global core.autocrlf true
 test: off
+build_script:
+  - ps: .\build.cmd -configuration Debug -pack
 assembly_info:
   patch: false
 artifacts:
