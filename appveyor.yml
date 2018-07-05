@@ -2,6 +2,8 @@
 init:
   - cmd: git config --global core.autocrlf true
 test: off
+build_script:
+  - ps: .\build.cmd -configuration Debug -pack
 assembly_info:
   patch: false
 artifacts:
@@ -9,7 +11,7 @@ artifacts:
     name: NuGet
 
 for:
-# master
+# master - release
 -
   branches:
     only:
@@ -25,11 +27,11 @@ for:
         branch: master
         appveyor_repo_tag: true
 
-# develop
+# master - develop
 -
   branches:
     only:
-      - develop
+      - master
   build_script:
   - ps: .\build.cmd -configuration Debug -pack
   deploy:
@@ -40,4 +42,5 @@ for:
       api_key:
         secure: Jjf/28XFNSoemMibRmtyttdDFf1s9TGpAGra0CWyLFgFW69rEe5qBeEahdq9Cl8v
       on:
-        branch: develop
+        branch: master
+        appveyor_repo_tag: true
