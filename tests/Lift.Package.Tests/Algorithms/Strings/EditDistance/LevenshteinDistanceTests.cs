@@ -2,7 +2,7 @@
 using Lift.Algorithms.Strings.EditDistance;
 using Xunit;
 
-namespace lift.algorithms.Strings.EditDistance
+namespace Lift.Tests.Algorithms.Strings.EditDistance
 {
     public class LevenshteinDistanceTests
     {

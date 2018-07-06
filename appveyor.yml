@@ -9,9 +9,7 @@ assembly_info:
 artifacts:
   - path: '.\artifacts\*.nupkg'
     name: NuGet
-
 for:
-# master - release
 -
   branches:
     only:
@@ -21,21 +19,6 @@ for:
   deploy:
     - provider: NuGet
       name: production
-      api_key:
-        secure: 0xScMBscH8iJ/a80e1dFkMc/ehAYd1FoeiZ/QmTe14TOlR/xt0H3lfxhphxnJfko
-      on:
-        branch: master
-        appveyor_repo_tag: true
-
-# master - develop
--
-  branches:
-    only:
-      - master
-  build_script:
-  - ps: .\build.cmd -configuration Debug -pack
-  deploy:
-    - provider: NuGet
       server: https://www.myget.org/F/lethargicdeveloper/api/v2/package
       skip_symbols: false
       symbol_server: https://www.myget.org/F/lethargicdeveloper/symbols/api/v2/package
@@ -43,4 +26,9 @@ for:
         secure: Jjf/28XFNSoemMibRmtyttdDFf1s9TGpAGra0CWyLFgFW69rEe5qBeEahdq9Cl8v
       on:
         branch: master
+    - provider: NuGet
+      name: production
+      api_key:
+        secure: 0xScMBscH8iJ/a80e1dFkMc/ehAYd1FoeiZ/QmTe14TOlR/xt0H3lfxhphxnJfko
+      on:
         appveyor_repo_tag: true
