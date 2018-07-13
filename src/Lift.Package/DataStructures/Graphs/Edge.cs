@@ -13,7 +13,7 @@ namespace Lift.DataStructures.Graphs
         public Vertex From { get; }
         public Vertex To { get;  }
 
-        public override string ToString() => From.Id + "->" + To.Id;
+        public override string ToString() => $"{From.Id}->{To.Id}";
 
         public bool Equals(Edge other) => ((other != null) && To.Equals(other.To) && From.Equals(other.From));
     }
