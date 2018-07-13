@@ -1,10 +1,10 @@
-﻿using Lift.Graphs;
+﻿using Lift.DataStructures.Graphs;
 using System.Linq;
 using System.Collections.Generic;
 using Xunit;
 using System;
 
-namespace Lift.Tests.Graphs
+namespace Lift.Tests.DataStructures.Graphs
 {
     public class TopologicalSortTests
     {

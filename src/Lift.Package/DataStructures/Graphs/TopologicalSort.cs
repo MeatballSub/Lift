@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Lift.Graphs
+namespace Lift.DataStructures.Graphs
 {
     public class TopologicalSort<V,E> where V : IVertex<V> where E : IEdge<V>
     {
@@ -18,7 +18,7 @@ namespace Lift.Graphs
 
         public IEnumerable<V> Sort(IGraph<V, E> graph)
         {
-            foreach (var vertex in graph.Verticies)
+            foreach (var vertex in graph.Vertices)
             {
                 Visit(vertex);
             }
@@ -46,7 +46,7 @@ namespace Lift.Graphs
         {
             processing.Add(vertex);
 
-            foreach (V dependency in vertex.AdjacentVerticies ?? Enumerable.Empty<V>())
+            foreach (V dependency in vertex.AdjacentVertices ?? Enumerable.Empty<V>())
             {
                 try
                 {

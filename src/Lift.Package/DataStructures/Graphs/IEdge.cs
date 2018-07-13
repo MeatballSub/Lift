@@ -1,4 +1,4 @@
-﻿namespace Lift.Graphs
+﻿namespace Lift.DataStructures.Graphs
 {
     public interface IEdge<V>
     {

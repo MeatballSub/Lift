@@ -1,39 +1,39 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Lift.Graphs
+namespace Lift.DataStructures.Graphs
 {
     public class Graph : IGraph<Vertex, Edge>
     {
-        private ISet<Vertex> verticies;
+        private ISet<Vertex> vertices;
         private ISet<Edge> edges;
 
         public Graph()
         {
-            verticies = new HashSet<Vertex>();
+            vertices = new HashSet<Vertex>();
             edges = new HashSet<Edge>();
         }
 
-        public ISet<Vertex> Verticies => verticies;
+        public ISet<Vertex> Vertices => vertices;
         public ISet<Edge> Edges => edges;
 
         public bool AddEdge(Edge edge)
         {
-            if (edge == null || !verticies.Contains(edge.From) || !verticies.Contains(edge.To)) return false;
+            if (edge == null || !vertices.Contains(edge.From) || !vertices.Contains(edge.To)) return false;
 
-            return verticies.Where(_ => _.Equals(edge.From)).Single().AdjacentVerticies.Add(edge.To) &&
+            return vertices.Where(_ => _.Equals(edge.From)).Single().AdjacentVertices.Add(edge.To) &&
             edges.Add(edge);
         }
 
         public bool AddVertex(Vertex vertex)
         {
-            bool wasAdded = verticies.Add(vertex);
+            bool wasAdded = vertices.Add(vertex);
 
             if (wasAdded)
             {
-                foreach (var neighbor in vertex.AdjacentVerticies ?? Enumerable.Empty<Vertex>())
+                foreach (var neighbor in vertex.AdjacentVertices ?? Enumerable.Empty<Vertex>())
                 {
-                    wasAdded = (verticies.Contains(neighbor))
+                    wasAdded = (vertices.Contains(neighbor))
                         ? (edges.Add(new Edge(vertex, neighbor)) && wasAdded)
                         : false;
                 }

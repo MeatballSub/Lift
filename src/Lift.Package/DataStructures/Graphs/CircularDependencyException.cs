@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Lift.Graphs
+namespace Lift.DataStructures.Graphs
 {
     public class CircularDependencyException : Exception
     {
@@ -19,10 +19,10 @@ namespace Lift.Graphs
         {
             get
             {
-                StringBuilder msg = new StringBuilder(this.InnerException?.Message);
+                var msg = new StringBuilder(this.InnerException?.Message);
                 if(msg.Length != 0)
                 {
-                    msg.Append(Environment.NewLine);
+                    msg.AppendLine();
                     msg.Append("  ");
                 }
                 msg.Append(base.Message);

@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Lift.Graphs
+namespace Lift.DataStructures.Graphs
 {
     public class Vertex : IVertex<Vertex>
     {
         private readonly string id;
-        private ISet<Vertex> adjacentVerticies;
+        private ISet<Vertex> adjacentVertices;
 
         public Vertex(string id)
         {
             this.id = id ?? throw new ArgumentNullException(nameof(id));
-            this.adjacentVerticies = new HashSet<Vertex>();
+            this.adjacentVertices = new HashSet<Vertex>();
         }
 
         public Vertex(string id, ISet<Vertex> adjacentVerticies):this(id)
         {
-            this.adjacentVerticies = adjacentVerticies ?? throw new ArgumentNullException(nameof(adjacentVerticies));
+            this.adjacentVertices = adjacentVerticies ?? throw new ArgumentNullException(nameof(adjacentVerticies));
         }
 
         public string Id => id;
 
-        public ISet<Vertex> AdjacentVerticies => adjacentVerticies;
+        public ISet<Vertex> AdjacentVertices => adjacentVertices;
 
         public bool Equals(Vertex other)
         {
