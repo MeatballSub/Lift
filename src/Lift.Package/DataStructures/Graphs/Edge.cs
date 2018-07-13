@@ -6,18 +6,15 @@ namespace Lift.DataStructures.Graphs
     {
         public Edge(Vertex from, Vertex to)
         {
-            this.From = from ?? throw new ArgumentNullException(nameof(from));
-            this.To = to ?? throw new ArgumentNullException(nameof(to));
+            From = from ?? throw new ArgumentNullException(nameof(from));
+            To = to ?? throw new ArgumentNullException(nameof(to));
         }
 
         public Vertex From { get; }
         public Vertex To { get;  }
 
-        public string Id => From.Id + "->" + To.Id;
+        public new string ToString => From.Id + "->" + To.Id;
 
-        public bool Equals(Edge other)
-        {
-            return (this.To.Equals(other.To) && this.From.Equals(other.From));
-        }
+        public bool Equals(Edge other) => ((other != null) && To.Equals(other.To) && From.Equals(other.From));
     }
 }

@@ -5,8 +5,8 @@ namespace Lift.DataStructures.Graphs
 {
     public class Graph : IGraph<Vertex, Edge>
     {
-        private ISet<Vertex> vertices;
-        private ISet<Edge> edges;
+        private readonly ISet<Vertex> vertices;
+        private readonly ISet<Edge> edges;
 
         public Graph()
         {
@@ -19,19 +19,21 @@ namespace Lift.DataStructures.Graphs
 
         public bool AddEdge(Edge edge)
         {
-            if (edge == null || !vertices.Contains(edge.From) || !vertices.Contains(edge.To)) return false;
+            if (edge == null || !vertices.Contains(edge.To)) return false;
 
-            return vertices.Where(_ => _.Equals(edge.From)).Single().AdjacentVertices.Add(edge.To) &&
-            edges.Add(edge);
+            var vertex = vertices.FirstOrDefault(_ => _.Equals(edge.From));
+            if (vertex == null) return false;
+
+            return vertex.AdjacentVertices.Add(edge.To) && edges.Add(edge);
         }
 
         public bool AddVertex(Vertex vertex)
         {
-            bool wasAdded = vertices.Add(vertex);
+            bool wasAdded = vertex != null && vertices.Add(vertex);
 
             if (wasAdded)
             {
-                foreach (var neighbor in vertex.AdjacentVertices ?? Enumerable.Empty<Vertex>())
+                foreach (var neighbor in vertex.AdjacentVertices)
                 {
                     wasAdded = (vertices.Contains(neighbor))
                         ? (edges.Add(new Edge(vertex, neighbor)) && wasAdded)

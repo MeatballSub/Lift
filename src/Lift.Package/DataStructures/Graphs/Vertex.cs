@@ -11,10 +11,11 @@ namespace Lift.DataStructures.Graphs
         public Vertex(string id)
         {
             this.id = id ?? throw new ArgumentNullException(nameof(id));
-            this.adjacentVertices = new HashSet<Vertex>();
+            adjacentVertices = new HashSet<Vertex>();
         }
 
-        public Vertex(string id, ISet<Vertex> adjacentVerticies):this(id)
+        public Vertex(string id, ISet<Vertex> adjacentVerticies)
+            :this(id)
         {
             this.adjacentVertices = adjacentVerticies ?? throw new ArgumentNullException(nameof(adjacentVerticies));
         }

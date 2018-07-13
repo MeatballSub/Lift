@@ -1,14 +1,13 @@
 ﻿namespace Lift.DataStructures.Graphs
 {
-    public interface IEdge<V>
+    public interface IEdge<TVertex>
     {
-        V From { get; }
-        V To { get; }
-        string Id { get; }
+        TVertex From { get; }
+        TVertex To { get; }
     }
 
-    public interface IEdge<V,T> : IEdge<V>
+    public interface IEdge<TVertex,TData> : IEdge<TVertex>
     {
-        T Data { get; }
+        TData Data { get; }
     }
 }

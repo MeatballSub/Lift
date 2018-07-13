@@ -1,31 +1,35 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Lift.DataStructures.Graphs
 {
-    public class TopologicalSort<V,E> where V : IVertex<V> where E : IEdge<V>
+    public class TopologicalSort<TVertex,TEdge>
+        where TVertex : IVertex<TVertex>
+        where TEdge : IEdge<TVertex>
     {
-        private ICollection<V> sortedVerticies;
-        private ICollection<V> visited;
-        private ICollection<V> processing;
+        private readonly ICollection<TVertex> sortedVertices;
+        private readonly ICollection<TVertex> visited;
+        private readonly ICollection<TVertex> processing;
 
         public TopologicalSort()
         {
-            sortedVerticies = new List<V>();
-            visited = new List<V>();
-            processing = new List<V>();
+            sortedVertices = new List<TVertex>();
+            visited = new List<TVertex>();
+            processing = new List<TVertex>();
         }
 
-        public IEnumerable<V> Sort(IGraph<V, E> graph)
+        public IEnumerable<TVertex> Sort(IGraph<TVertex, TEdge> graph)
         {
+            if (graph == null) throw new ArgumentNullException(nameof(graph));
             foreach (var vertex in graph.Vertices)
             {
                 Visit(vertex);
             }
-            return sortedVerticies;
+            return sortedVertices;
         }
 
-        private void Visit(V vertex)
+        private void Visit(TVertex vertex)
         {
             if (processing.Contains(vertex))
             {
@@ -39,14 +43,14 @@ namespace Lift.DataStructures.Graphs
 
             visited.Add(vertex);
             Process(vertex);
-            sortedVerticies.Add(vertex);
+            sortedVertices.Add(vertex);
         }
 
-        private void Process(V vertex)
+        private void Process(TVertex vertex)
         {
             processing.Add(vertex);
 
-            foreach (V dependency in vertex.AdjacentVertices ?? Enumerable.Empty<V>())
+            foreach (TVertex dependency in vertex.AdjacentVertices)
             {
                 try
                 {

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Lift.DataStructures.Graphs
 {
-    public interface IVertex<V> : IEquatable<V>
+    public interface IVertex<TVertex> : IEquatable<TVertex>
     {
         string Id { get; }
-        ISet<V> AdjacentVertices { get; }
+        ISet<TVertex> AdjacentVertices { get; }
     }
 
-    public interface IVertex<V,T> : IVertex<V>
+    public interface IVertex<TVertex,TData> : IVertex<TVertex>
     {
-        T Data { get; }
+        TData Data { get; }
     }
 }

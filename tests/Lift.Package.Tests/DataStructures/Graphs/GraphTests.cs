@@ -196,7 +196,7 @@ namespace Lift.Tests.DataStructures.Graphs
             {
                 foreach(var toVertex in fromVertex.Value ?? Enumerable.Empty<string>())
                 {
-                    Edge edge = graph.Edges.Where(_ => _.Id.Equals(fromVertex.Key + "->" + toVertex)).Single();
+                    Edge edge = graph.Edges.Where(_ => _.ToString.Equals(fromVertex.Key + "->" + toVertex)).Single();
                 }
             }
         }
